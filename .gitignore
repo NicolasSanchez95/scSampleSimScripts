@@ -1,0 +1,16 @@
+*.err
+*.out
+*.rds
+*.Rds
+*.rda
+*.Rda
+*.log
+*.pdf
+*.csv
+*.tsv
+*.txt
+*.png
+logs/
+**/results/
+simulation_scripts/data/*
+!simulation_scripts/data/.gitkeep
