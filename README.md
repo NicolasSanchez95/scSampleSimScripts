@@ -57,7 +57,7 @@ cd master_table_scripts
 ./run_sims_extraction.sh --cohort-name demo50 --id-pattern "augSimLeiden_"
 ```
 
-**3. Conf metrics:**
+**3. Cluster and Experiment metrics:**
 
 ```bash
 cd decision_parameters
