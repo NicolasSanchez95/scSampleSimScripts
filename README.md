@@ -1,4 +1,4 @@
-# Simulation and all-hypothesis metrics (code availability)
+# Simulation and all-hypothesis metrics 
 
 These are companion scripts that generate the data used for the paper. Major analysis function live in the R package **postselect** ([epurdom/postselectPaper](https://github.com/epurdom/postselectPaper)). These scripts **install and load git tag** `tested-backup-20260904` (commit `ba61526`). They then make calls using SLURM to this analysis package to simulate scRNA-seq data with known DE structure, extract per-simulation master tables, and compute cluster-level and  experiment level metrics (FDP / power / imbalance).
 
@@ -69,11 +69,11 @@ The first R job that needs `postselect` installs tag `tested-backup-20260904` if
 ## Outputs
 
 
-| Stage         | Location                                                                                                    |
-| ------------- | ----------------------------------------------------------------------------------------------------------- |
-| Simulation    | `simulation_scripts/results/` (`anls_info/`, `de_final/`, `sims_info/`, `de_configs/`)                      |
-| Master tables | `master_table_scripts/results/<cohort>/master_pwr_table_*.rds`                                              |
-| Cluster level metrics  | `decision_parameters/results/<cohort>/conf_metrics_tested_*.rds` and `conf_metrics_tested_by_cluster_*.rds` |
+| Stage                 | Location                                                                                                    |
+| --------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Simulation            | `simulation_scripts/results/` (`anls_info/`, `de_final/`, `sims_info/`, `de_configs/`)                      |
+| Master tables         | `master_table_scripts/results/<cohort>/master_pwr_table_*.rds`                                              |
+| Cluster level metrics | `decision_parameters/results/<cohort>/conf_metrics_tested_*.rds` and `conf_metrics_tested_by_cluster_*.rds` |
 
 
 Shared settings are in `config.sh` (repo root, `POSTSELECT_REF`, `POSTSELECT_SHA`). The same pin is in `R/ensure_postselect.R`.
