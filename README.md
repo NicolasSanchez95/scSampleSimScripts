@@ -73,7 +73,7 @@ The first R job that needs `postselect` installs tag `tested-backup-20260904` if
 | ------------- | ----------------------------------------------------------------------------------------------------------- |
 | Simulation    | `simulation_scripts/results/` (`anls_info/`, `de_final/`, `sims_info/`, `de_configs/`)                      |
 | Master tables | `master_table_scripts/results/<cohort>/master_pwr_table_*.rds`                                              |
-| Conf metrics  | `decision_parameters/results/<cohort>/conf_metrics_tested_*.rds` and `conf_metrics_tested_by_cluster_*.rds` |
+| Cluster level metrics  | `decision_parameters/results/<cohort>/conf_metrics_tested_*.rds` and `conf_metrics_tested_by_cluster_*.rds` |
 
 
 Shared settings are in `config.sh` (repo root, `POSTSELECT_REF`, `POSTSELECT_SHA`). The same pin is in `R/ensure_postselect.R`.
