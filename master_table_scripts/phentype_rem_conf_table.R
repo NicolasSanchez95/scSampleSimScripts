@@ -37,8 +37,8 @@ if (is.null(repo_root) || !nzchar(repo_root)) {
 } else {
   repo_root <- normalizePath(repo_root, mustWork = TRUE)
 }
-source(file.path(repo_root, "R", "ensure_postselect.R"))
-ensure_postselect()
+source(file.path(repo_root, "R", "ensure_scSampleSim.R"))
+ensure_scSampleSim()
 
 phen_type_removal <- parse_flag("--phen-type-removal", args)
 cohort_name <- parse_flag("--cohort-name", args)
@@ -136,7 +136,7 @@ start_time <- Sys.time()
 all_results <- pbapply::pblapply(
   cohort_ids_to_process,
   function(x) {
-    result <- postselect::per_sim_data_extraction(
+    result <- scSampleSim::per_sim_data_extraction(
       id_check_single = x,
       phen_type_removal = phen_type_removal,
       analysis_results_dir = analysis_results_dir,

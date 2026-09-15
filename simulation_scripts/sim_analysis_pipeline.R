@@ -93,8 +93,8 @@ if (is.null(repo_root) || !nzchar(repo_root)) {
 } else {
   repo_root <- normalizePath(repo_root, mustWork = TRUE)
 }
-source(file.path(repo_root, "R", "ensure_postselect.R"))
-ensure_postselect()
+source(file.path(repo_root, "R", "ensure_scSampleSim.R"))
+ensure_scSampleSim()
 working_dir <- file.path(repo_root, "simulation_scripts")
 raw_data_path <- file.path(working_dir, "data", "filtered_sce_data.Rda")
 
@@ -252,12 +252,12 @@ print(paste0("augDataRep: ", augDataRep))
 
 print(paste0("creating the simulated data according to the sim_type: ", sim_type))
 start_time <- Sys.time()
-args_sim <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::create_simulated_data)]
+args_sim <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::create_simulated_data)]
 args_sim$sim_type <- sim_type
 args_sim$sim_prefix <- sim_prefix
 args_sim$new_id_check <- new_id_check
 args_sim$num_de_genes <- num_de_genes
-sim_data <- do.call(postselect::create_simulated_data, args_sim)
+sim_data <- do.call(scSampleSim::create_simulated_data, args_sim)
 used_sce <- sim_data$used_sce
 end_time <- Sys.time()
 print(paste0("Time taken to create the simulated data: ", end_time - start_time))
@@ -282,7 +282,7 @@ saveRDS(pa_de, file.path(file_naming_utils$anls_info_dir, paste0(file_naming_uti
 ############### PCA AND HARMONY CLUSTERING ON ALL GENES ###############
 start_time <- Sys.time()
 print(paste0("Running PCA and Harmony clustering according to the clustering type: ", cluster_type))
-clust_results <- postselect::run_pca_harmony_leiden(used_sce, cluster_type = cluster_type, leiden_res = leiden_res,num_pcs = num_pcs, include_batch = pa_de$include_batch)
+clust_results <- scSampleSim::run_pca_harmony_leiden(used_sce, cluster_type = cluster_type, leiden_res = leiden_res,num_pcs = num_pcs, include_batch = pa_de$include_batch)
 end_time <- Sys.time()
 
 ############### ORACLE CLUSTERING ###############
@@ -292,7 +292,7 @@ if ("oracle" %in% selected_anls && sim_prefix %in% sim_prefixes_w_oracle){
   curr_anls <- "oracle"
   cluster_assignment_curr_anls <- pa_de$leiden_clusters
   lblnorm_counts <- clust_results$lblnorm_counts
-  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
   args_anls$clustering_assignment_curr_anls <- cluster_assignment_curr_anls
   args_anls$lblnorm_counts <- lblnorm_counts
   args_anls$used_sce <- used_sce
@@ -307,10 +307,10 @@ if ("oracle" %in% selected_anls && sim_prefix %in% sim_prefixes_w_oracle){
   args_anls$run_PVE <- run_PVE_metrics
   args_anls$cell_embeddings <- clust_results$pca_embeds
   args_anls$embedding_pc_weights <- (clust_results$pca_stdev)^2
-  anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+  anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
   end_time <- Sys.time()
   print(paste0("Time taken to run oracle analysis: ", end_time - start_time))
-  postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+  scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
 }
 
 
@@ -326,7 +326,7 @@ if ("no_harmony" %in% selected_anls) {
   cluster_assignment_curr_anls <- clust_results$cluster_assignment_list
   lblnorm_counts <- clust_results$lblnorm_counts
   embedding_name <- "pca_embeds"
-  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
   args_anls$clustering_assignment_curr_anls <- cluster_assignment_curr_anls
   args_anls$lblnorm_counts <- lblnorm_counts
   args_anls$used_sce <- used_sce
@@ -341,10 +341,10 @@ if ("no_harmony" %in% selected_anls) {
   args_anls$run_PVE <- run_PVE_metrics
   args_anls$cell_embeddings <- clust_results$pca_embeds
   args_anls$embedding_pc_weights <- (clust_results$pca_stdev)^2
-  anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+  anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
   end_time <- Sys.time()
   print(paste0("Time taken to run analysis on all of the data with no harmony: ", end_time - start_time))
-  postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+  scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
 }
 
 if ("full_harmony" %in% selected_anls) {
@@ -352,7 +352,7 @@ if ("full_harmony" %in% selected_anls) {
   start_time <- Sys.time()
   curr_anls <- "full_harmony"
   cluster_assignment_curr_anls <- clust_results$cluster_assignment_list_harmony
-  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
   args_anls$clustering_assignment_curr_anls <- cluster_assignment_curr_anls
   args_anls$lblnorm_counts <- lblnorm_counts
   args_anls$used_sce <- used_sce
@@ -367,10 +367,10 @@ if ("full_harmony" %in% selected_anls) {
   args_anls$run_PVE <- run_PVE_metrics
   args_anls$cell_embeddings <- clust_results$harmony_embeddings
   args_anls$embedding_pc_weights <- NULL
-  anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+  anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
   end_time <- Sys.time()
   print(paste0("Time taken to run analysis on all of the data with harmony: ", end_time - start_time))
-  postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+  scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
 }
 
 
@@ -382,7 +382,7 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
   null_genes <- setdiff(rownames(used_sce), pa_de$set_de_genes)
   null_sce <- used_sce[null_genes, ]
   print("Running PCA and Harmony clustering for null genes")
-  clust_results_null <- postselect::run_pca_harmony_leiden(
+  clust_results_null <- scSampleSim::run_pca_harmony_leiden(
     null_sce,
     cluster_type = cluster_type,
     leiden_res = leiden_res,
@@ -397,7 +397,7 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
     curr_anls <- "null_noharm"
     cluster_assignment_curr_anls <- clust_results_null$cluster_assignment_list
     embedding_name <- "pca_embeds"
-    args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+    args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
     args_anls$clustering_assignment_curr_anls <- cluster_assignment_curr_anls
     args_anls$lblnorm_counts <- lblnorm_counts
     args_anls$used_sce <- used_sce
@@ -412,10 +412,10 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
     args_anls$run_PVE <- run_PVE_metrics
     args_anls$cell_embeddings <- clust_results_null$pca_embeds
     args_anls$embedding_pc_weights <- (clust_results_null$pca_stdev)^2
-    anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+    anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
     end_time <- Sys.time()
     print(paste0("Time taken to run analysis on null genes without harmony: ", end_time - start_time))
-    postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+    scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
   }
 
   if ("null_harmony" %in% selected_anls) {
@@ -424,7 +424,7 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
     curr_anls <- "null_harmony"
     cluster_assignment_curr_anls <- clust_results_null$cluster_assignment_list_harmony
     lblnorm_counts <- clust_results_null$lblnorm_counts
-    args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+    args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
     args_anls$clustering_assignment_curr_anls <- cluster_assignment_curr_anls
     args_anls$lblnorm_counts <- lblnorm_counts
     args_anls$used_sce <- used_sce
@@ -439,9 +439,9 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
     args_anls$run_PVE <- run_PVE_metrics
     args_anls$cell_embeddings <- clust_results_null$harmony_embeddings
     args_anls$embedding_pc_weights <- NULL
-    anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+    anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
     end_time <- Sys.time()
-    postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+    scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
   }
 
   # run fastMNN analysis on null genes
@@ -455,11 +455,11 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
     assay(fastMNN_corrected, "logcounts", withDimnames = FALSE) <- assay(null_sce, "logcounts")
     seurat_obj_fastMNN <- as.Seurat(fastMNN_corrected, counts = "counts", data = "logcounts")
     if (cluster_type == "leiden") {
-      cluster_assignment_list_fastMNN <- postselect::cluster_using_leiden(seurat_obj_fastMNN, leiden_res = leiden_res, reduction_type = "corrected")
+      cluster_assignment_list_fastMNN <- scSampleSim::cluster_using_leiden(seurat_obj_fastMNN, leiden_res = leiden_res, reduction_type = "corrected")
     } else if (cluster_type == "kmeans") {
-      cluster_assignment_list_fastMNN <- postselect::cluster_using_kmeans(seurat_obj_fastMNN, kmeans_k = kmeans_k, reduction_type = "corrected")
+      cluster_assignment_list_fastMNN <- scSampleSim::cluster_using_kmeans(seurat_obj_fastMNN, kmeans_k = kmeans_k, reduction_type = "corrected")
     }
-    args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+    args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
     args_anls$clustering_assignment_curr_anls <- cluster_assignment_list_fastMNN
     args_anls$lblnorm_counts <- clust_results_null$lblnorm_counts
     args_anls$used_sce <- used_sce
@@ -474,10 +474,10 @@ if (any(c("null_noharm", "null_harmony", "null_fmnn") %in% selected_anls)) {
     args_anls$run_PVE <- run_PVE_metrics
     args_anls$cell_embeddings <- Seurat::Embeddings(seurat_obj_fastMNN, reduction = "corrected")
     args_anls$embedding_pc_weights <- NULL
-    anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+    anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
     end_time <- Sys.time()
     print(paste0("Time taken to run fastMNN analysis on null genes: ", end_time - start_time))
-    postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+    scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
   }
 }
 
@@ -488,15 +488,15 @@ if ("TvsS" %in% selected_anls) {
   print("Running TvsS analysis")
   start_time <- Sys.time()
   curr_anls <- "TvsS"
-  args_tvs <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::find_TvsS_genes)]
+  args_tvs <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::find_TvsS_genes)]
   args_tvs$used_sce <- used_sce
   args_tvs$clust_results <- clust_results
   args_tvs$num_genes_for_TvsS_clustering <- num_genes_for_TvsS_clustering
   args_tvs$new_id_check <- new_id_check
   args_tvs$use_pseudobulk_TvsS <- use_pseudobulk_TvsS
-  TvsS_genes <- do.call(postselect::find_TvsS_genes, args_tvs)
+  TvsS_genes <- do.call(scSampleSim::find_TvsS_genes, args_tvs)
   used_sce_TvsS <- used_sce[TvsS_genes, ]
-  clust_results_TvsS <- postselect::run_pca_harmony_leiden(
+  clust_results_TvsS <- scSampleSim::run_pca_harmony_leiden(
     used_sce_TvsS,
     cluster_type = cluster_type,
     leiden_res = leiden_res,
@@ -506,7 +506,7 @@ if ("TvsS" %in% selected_anls) {
 
   cluster_assignment_curr_anls <- clust_results_TvsS$cluster_assignment_list
 
-  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
   args_anls$clustering_assignment_curr_anls <- cluster_assignment_curr_anls
   args_anls$lblnorm_counts <- lblnorm_counts
   args_anls$used_sce <- used_sce
@@ -521,10 +521,10 @@ if ("TvsS" %in% selected_anls) {
   args_anls$run_PVE <- run_PVE_metrics
   args_anls$cell_embeddings <- clust_results_TvsS$pca_embeds
   args_anls$embedding_pc_weights <- (clust_results_TvsS$pca_stdev)^2
-  anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+  anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
   end_time <- Sys.time()
   print(paste0("Time taken to run TvsS analysis: ", end_time - start_time))
-  postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+  scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
 }
 
 
@@ -541,12 +541,12 @@ if ("fmnn" %in% selected_anls) {
   seurat_obj_fmnn <- as.Seurat(fmnn_corrected, counts = "counts", data = "logcounts")
 
   if (cluster_type == "leiden") {
-    cluster_assignment_list_fmnn <- postselect::cluster_using_leiden(seurat_obj_fmnn, leiden_res = leiden_res, reduction_type = "corrected")
+    cluster_assignment_list_fmnn <- scSampleSim::cluster_using_leiden(seurat_obj_fmnn, leiden_res = leiden_res, reduction_type = "corrected")
   } else if (cluster_type == "kmeans") {
-    cluster_assignment_list_fmnn <- postselect::cluster_using_kmeans(seurat_obj_fmnn, kmeans_k = kmeans_k, reduction_type = "corrected")
+    cluster_assignment_list_fmnn <- scSampleSim::cluster_using_kmeans(seurat_obj_fmnn, kmeans_k = kmeans_k, reduction_type = "corrected")
   }
 
-  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(postselect::run_analysis_for_clustering)]
+  args_anls <- file_naming_utils[names(file_naming_utils) %in% formalArgs(scSampleSim::run_analysis_for_clustering)]
   args_anls$clustering_assignment_curr_anls <- cluster_assignment_list_fmnn
   args_anls$lblnorm_counts <- clust_results$lblnorm_counts
   args_anls$used_sce <- used_sce
@@ -561,10 +561,10 @@ if ("fmnn" %in% selected_anls) {
   args_anls$run_PVE <- run_PVE_metrics
   args_anls$cell_embeddings <- Seurat::Embeddings(seurat_obj_fmnn, reduction = "corrected")
   args_anls$embedding_pc_weights <- NULL
-  anls_res <- do.call(postselect::run_analysis_for_clustering, args_anls)
+  anls_res <- do.call(scSampleSim::run_analysis_for_clustering, args_anls)
   end_time <- Sys.time()
   print(paste0("Time taken to run FMNN analysis: ", end_time - start_time))
-  postselect::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
+  scSampleSim::print_quick_glob_ctrl(anls_res, cut_off_true, cut_off_false, sig_threshold, overlap_type, ctrl_type)
 }
 
 

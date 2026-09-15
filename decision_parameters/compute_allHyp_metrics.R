@@ -19,8 +19,8 @@ cut_off_false <- as.numeric(args[[5]])
 sig_threshold_fixed <- as.numeric(args[[6]])
 p_val_col_name <- args[[7]]
 
-source(file.path(repo_root, "R", "ensure_postselect.R"))
-ensure_postselect()
+source(file.path(repo_root, "R", "ensure_scSampleSim.R"))
+ensure_scSampleSim()
 library(dplyr)
 
 phen_type_removal_set <- c("fmnn_", "harmony_", "noharm_", "noharm_null_", "harmony_null_", "TvsS_")
@@ -44,7 +44,7 @@ for (phen_type_removal in phen_type_removal_set) {
   }
   master_pwr_table <- readRDS(master_pwr_table_fn)
 
-  conf_metrics_tested <- postselect::get_conf_metrics_tested_all_hypotheses(
+  conf_metrics_tested <- scSampleSim::get_conf_metrics_tested_all_hypotheses(
     master_pwr_table_used = master_pwr_table,
     sig_threshold_fixed = sig_threshold_fixed,
     p_val_col_name = p_val_col_name,

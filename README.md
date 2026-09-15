@@ -1,16 +1,16 @@
 # Simulation and all-hypothesis metrics 
 
-These are companion scripts that generate the data used for the paper. Major analysis function live in the R package **postselect** ([epurdom/postselectPaper](https://github.com/epurdom/postselectPaper)). These scripts **install and load git tag** `tested-backup-20260904` (commit `ba61526`). They then make calls using SLURM to this analysis package to simulate scRNA-seq data with known DE structure, extract per-simulation master tables, and compute cluster-level and  experiment level metrics (FDP / power / imbalance).
+These are companion scripts that generate the data used for the paper. Major analysis function live in the R package **scSampleSim** ([epurdom/scSampleSim](https://github.com/epurdom/scSampleSim)). These scripts **install and load git tag** `scSampleSim-20260910`. They then make calls using SLURM to this analysis package to simulate scRNA-seq data with known DE structure, extract per-simulation master tables, and compute cluster-level and  experiment level metrics (FDP / power / imbalance).
 
 Analysis functions live 
 
 ## Software
 
-- R 4.x and Bioconductor packages used by `postselect` (including Seurat, muscat, harmony, batchelor, edgeR, scuttle, variancePartition)
-- `remotes` and `BiocManager` (the first run installs tag `tested-backup-20260904` and any missing Bioconductor Imports such as `batchelor`)
+- R 4.x and Bioconductor packages used by `scSampleSim` (including Seurat, muscat, harmony, batchelor, edgeR, scuttle, variancePartition)
+- `remotes` and `BiocManager` (the first run installs tag `scSampleSim-20260910` and any missing Bioconductor Imports such as `batchelor`)
 - SLURM for the provided wrappers (`run_param_creator.sh`, `run_sims_extraction.sh`). Set `SLURM_PARTITION` and/or `SLURM_ACCOUNT` if your site requires them. There is no default partition or node list.
 
-Optional: `export R_SCRIPT=/path/to/Rscript` if `Rscript` is not on `PATH`. Do not set `R_LIBS_USER` unless you want a non-default library.
+Optional: `export R_SCRIPT=/path/to/Rscript` if `Rscript` is not on `PATH`. Do not set `R_LIBS_USER` unless you want a non-default library. If the site library is not writable, the first run creates/uses the user library from `R_LIBS_USER` (or R's default personal library).
 
 ## Input data
 
@@ -64,7 +64,7 @@ cd decision_parameters
 ./run_allHyp_metrics.sh --cohort-name demo50
 ```
 
-The first R job that needs `postselect` installs tag `tested-backup-20260904` if the library SHA does not match `ba61526`. Later array tasks reuse that install.
+The first R job that needs `scSampleSim` installs tag `scSampleSim-20260910` if the library SHA does not match `SCSAMPLESIM_SHA`. Later array tasks reuse that install.
 
 ## Outputs
 
@@ -76,4 +76,4 @@ The first R job that needs `postselect` installs tag `tested-backup-20260904` if
 | Cluster level metrics | `decision_parameters/results/<cohort>/conf_metrics_tested_*.rds` and `conf_metrics_tested_by_cluster_*.rds` |
 
 
-Shared settings are in `config.sh` (repo root, `POSTSELECT_REF`, `POSTSELECT_SHA`). The same pin is in `R/ensure_postselect.R`.
+Shared settings are in `config.sh` (repo root, `SCSAMPLESIM_REF`, `SCSAMPLESIM_SHA`). The same pin is in `R/ensure_scSampleSim.R`.

@@ -30,8 +30,8 @@ if (is.null(repo_root) || !nzchar(repo_root)) {
 } else {
   repo_root <- normalizePath(repo_root, mustWork = TRUE)
 }
-source(file.path(repo_root, "R", "ensure_postselect.R"))
-ensure_postselect()
+source(file.path(repo_root, "R", "ensure_scSampleSim.R"))
+ensure_scSampleSim()
 
 cohort_name <- parse_flag("--cohort-name", args)
 id_pattern <- parse_flag("--id-pattern", args)

@@ -43,8 +43,8 @@ while (i <= length(args)) {
   i <- i + 1
 }
 repo_root <- normalizePath(repo_root, mustWork = TRUE)
-source(file.path(repo_root, "R", "ensure_postselect.R"))
-ensure_postselect()
+source(file.path(repo_root, "R", "ensure_scSampleSim.R"))
+ensure_scSampleSim()
 
 working_dir <- file.path(repo_root, "simulation_scripts")
 raw_data_path <- file.path(working_dir, "data", "filtered_sce_data.Rda")
@@ -113,9 +113,9 @@ pa <- list(
 
 verbose <- TRUE
 print("Preparing augmented data")
-args_prep <- pa[names(pa) %in% formalArgs(postselect::prep_aug_sim)]
+args_prep <- pa[names(pa) %in% formalArgs(scSampleSim::prep_aug_sim)]
 args_prep$verbose <- verbose
-pa <- do.call(postselect::prep_aug_sim, args_prep)
+pa <- do.call(scSampleSim::prep_aug_sim, args_prep)
 
 print("Saving pa before processing for use in analysis")
 saveRDS(pa, file.path(sims_info_dir, paste0(param_file_prefix, sim_prefix, ".Rds")))

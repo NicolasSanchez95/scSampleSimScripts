@@ -10,10 +10,13 @@
 _CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="${REPO_ROOT:-${_CONFIG_DIR}}"
 
-# Pinned postselectPaper release used by all R entrypoints (must match R/ensure_postselect.R).
-POSTSELECT_REPO="${POSTSELECT_REPO:-epurdom/postselectPaper}"
-POSTSELECT_REF="${POSTSELECT_REF:-tested-backup-20260904}"
-POSTSELECT_SHA="${POSTSELECT_SHA:-ba615262f3447073e8e67018e95d5240bfe2893e}"
+# Pinned scSampleSim release used by all R entrypoints (must match R/ensure_scSampleSim.R).
+# Do not reuse tested-backup-20260904 / ba61526 (that commit is still Package: postselect).
+# After the Package: scSampleSim rename is committed, tag it scSampleSim-20260910 and
+# set SCSAMPLESIM_SHA to that commit's full SHA.
+SCSAMPLESIM_REPO="${SCSAMPLESIM_REPO:-epurdom/scSampleSim}"
+SCSAMPLESIM_REF="${SCSAMPLESIM_REF:-scSampleSim-20260910}"
+SCSAMPLESIM_SHA="${SCSAMPLESIM_SHA:-PENDING_AFTER_SCSAMPLESIM_RENAME_TAG}"
 
 # Rscript: R_SCRIPT env override, else Rscript on PATH.
 # Optional: module load R/4.5.0 on clusters that provide Environment Modules.

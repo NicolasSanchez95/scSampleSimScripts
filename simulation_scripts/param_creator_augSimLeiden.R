@@ -40,8 +40,8 @@ while (i <= length(args)) {
   i <- i + 1
 }
 repo_root <- normalizePath(repo_root, mustWork = TRUE)
-source(file.path(repo_root, "R", "ensure_postselect.R"))
-ensure_postselect()
+source(file.path(repo_root, "R", "ensure_scSampleSim.R"))
+ensure_scSampleSim()
 
 working_dir <- file.path(repo_root, "simulation_scripts")
 raw_data_path <- file.path(working_dir, "data", "filtered_sce_data.Rda")
@@ -110,9 +110,9 @@ pa <- list(
 
 verbose <- TRUE
 print("Preparing augmented data")
-args_prep <- pa[names(pa) %in% formalArgs(postselect::prep_aug_sim)]
+args_prep <- pa[names(pa) %in% formalArgs(scSampleSim::prep_aug_sim)]
 args_prep$verbose <- verbose
-pa <- do.call(postselect::prep_aug_sim, args_prep)
+pa <- do.call(scSampleSim::prep_aug_sim, args_prep)
 
 print("Saving pa before processing for use in analysis")
 pa_before_processing <- pa
@@ -124,7 +124,7 @@ num_pcs <- 50
 num_sim_genes <- 0
 
 print("Simulating 0 genes (oracle cluster labels on null genes)")
-sim_data <- postselect::create_full_augmented_data_w_num_sim_genes(
+sim_data <- scSampleSim::create_full_augmented_data_w_num_sim_genes(
   sim_prefix = sim_prefix,
   new_id_check = new_id_check,
   num_sim_genes = num_sim_genes,
@@ -145,7 +145,7 @@ print("Getting null genes")
 null_genes <- setdiff(rownames(used_sce), pa_de$set_de_genes)
 null_sce <- used_sce[null_genes, ]
 print("Running PCA and Harmony clustering for null genes")
-clust_results_null <- postselect::run_pca_harmony_leiden(
+clust_results_null <- scSampleSim::run_pca_harmony_leiden(
   null_sce,
   cluster_type = cluster_type,
   leiden_res = leiden_res,
